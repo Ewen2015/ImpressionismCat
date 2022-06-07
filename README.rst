@@ -1,5 +1,5 @@
-# ImpressionismCat, A Cat Full of Imagination
-========================================
+ImpressionismCat, A Cat Full of Imagination
+===========================================
 
 😸😹😺😻😼😽😾😿🙀🐱
 
@@ -13,7 +13,7 @@ David, a cat of my friend Selia, is the ambassador of the project.
 
 Selia and me were co-workers at IBM and we met in a strategy project in the autum of Beijing in 2020. Since then I know Selia got a incredible cute cat. So when the project came into shape and needed an ambassador, her cute cat just came across my mind and I know that's it!
 
-.. image:: https://raw.githubusercontent.com/Ewen2015/ImpressionismCat/master/ImpressionismCat.jpeg">
+.. image:: https://raw.githubusercontent.com/Ewen2015/ImpressionismCat/master/ImpressionismCat.jpeg
 
 
 License

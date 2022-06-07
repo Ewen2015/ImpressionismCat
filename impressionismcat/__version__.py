@@ -10,5 +10,6 @@ __version__ = '.'.join(map(str, VERSION))
 # pip3 install wheel twine
 # python3 setup.py bdist_wheel
 # python3 -m twine upload dist/*
+# twine upload -u YOUR-USERNAME -p YOUR-PASSWORD --repository-url https://test.pypi.org/legacy/ dist/*
 
 # pip3 install dist/my-project.whl
