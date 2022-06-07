@@ -5,9 +5,9 @@ Summary: ImpressionismCat, A Cat Full of Imagination.
 Home-page: https://github.com/Ewen2015/ImpressionismCat
 Author: Ewen Wang
 Author-email: wolfgangwong2012@gmail.com
-License: MIT License
-Classifier: License :: OSI Approved :: MIT License
-Classifier: Programming Language :: Python :: 3.8
+License: Apache License 2.0
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3.7
 License-File: LICENSE
 
 
@@ -20,7 +20,7 @@ ImpressionismCat is a deep learning project that applies most cutting edge techn
 
 
 Story of the ImpressionismCat
-----------------------
+-----------------------------
 
 David, a cat of my friend Selia, is the ambassador of the project. 
 

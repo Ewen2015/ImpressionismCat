@@ -7,7 +7,7 @@ ImpressionismCat is a deep learning project that applies most cutting edge techn
 
 
 Story of the ImpressionismCat
-----------------------
+-----------------------------
 
 David, a cat of my friend Selia, is the ambassador of the project. 
 

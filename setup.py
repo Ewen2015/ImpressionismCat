@@ -16,7 +16,6 @@ AUTHOR = 'Ewen Wang'
 REQUIRED = [
     'pandas', 'numpy', 'matplotlib', 'tensorflow' 
 ]
-LISCENCE='MIT License'
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -70,10 +69,10 @@ setup(
     packages=find_packages(exclude=('tests',)),
     install_requires=REQUIRED,
     include_package_data=True,
-    license=LISCENCE,
+    license='Apache License 2.0',
     classifiers=[
-        'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 3.8',
+        'License :: OSI Approved :: Apache Software License',
+        'Programming Language :: Python :: 3.7',
     ],
     cmdclass={
         'upload': UploadCommand,
