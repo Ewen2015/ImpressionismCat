@@ -1,0 +1,12 @@
+LICENSE
+README.rst
+setup.py
+impressionismcat/__init__.py
+impressionismcat/__version__.py
+impressionismcat.egg-info/PKG-INFO
+impressionismcat.egg-info/SOURCES.txt
+impressionismcat.egg-info/dependency_links.txt
+impressionismcat.egg-info/requires.txt
+impressionismcat.egg-info/top_level.txt
+impressionismcat/paint/__init__.py
+impressionismcat/paint/style.py
