@@ -1,15 +1,14 @@
-# ImpressionismCat, A Cat Full of Imagination
+ImpressionismCat, A Cat Full of Imagination
 ========================================
 
 😸😹😺😻😼😽😾😿🙀🐱
 
-GossipCat is a data science consulting framework that simplifies the process of machine learning from data cleaning, simple feature engineering, machine learning algorithm comparison, hyper parameter tuning, model evaluation, to results output. It is designed to be efficient with following features:
+ImpressionismCat is a deep learning project that applies most cutting edge techniques to make art. We believe that a better understanding of how deep learning works contributes to the understanding of ourselves as human beings.
 
-- Agile machine learning framework: designed with a lean start and continuing improvement.
-- Pipeline data preprocessing: high cohesion, low coupling.
-- Algorithm comparison: no free lunch in algorithm selection.
-- Diverse model evaluation: makes the evaluation with business sense and visible. 
-- Architectural thinking: not just data science but also machine learning engineering.
+ImpressionismCat has realized the following algorithms:
+
+1. Neural style transfer (Gatys, Ecker, and Bethge, “A Neural Algorithm of Artistic Style.”). 
+2. TBA
 
 
 Story of the ImpressionismCat
