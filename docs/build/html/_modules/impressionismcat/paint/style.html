@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>impressionismcat.paint.style &mdash; ImpressionismCat 0.0.1 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> ImpressionismCat
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">ImpressionismCat Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">ImpressionismCat API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../appendix.html">Appendix</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribute.html">Contribute to ImpressionismCat</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">ImpressionismCat</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>impressionismcat.paint.style</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for impressionismcat.paint.style</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">author:     Ewen Wang</span>
+<span class="sd">email:      wolfgangwong2012@gmail.com</span>
+<span class="sd">license:    Apache License 2.0</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+<span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.figsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.grid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+
+<div class="viewcode-block" id="StyleTransfer"><a class="viewcode-back" href="../../../api.html#impressionismcat.paint.StyleTransfer">[docs]</a><span class="k">class</span> <span class="nc">StyleTransfer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;docstring for StyleTransfer&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_content</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">path_style</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> 
+                  <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">display_interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                  <span class="n">weight_content</span><span class="o">=</span><span class="mf">1e3</span><span class="p">,</span> <span class="n">weight_style</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">StyleTransfer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_content</span><span class="o">=</span><span class="n">path_content</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_style</span><span class="o">=</span><span class="n">path_style</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="o">=</span><span class="n">iterations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">display</span><span class="o">=</span><span class="n">display</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_interval</span><span class="o">=</span><span class="n">display_interval</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weight_content</span><span class="o">=</span><span class="n">weight_content</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weight_style</span><span class="o">=</span><span class="n">weight_style</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss_weights</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weight_style</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight_content</span><span class="p">)</span>
+
+        <span class="c1"># load images</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_resize_img</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_content</span><span class="p">)</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_resize_img</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_style</span><span class="p">)</span>
+
+        <span class="c1"># initialize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_vgg_content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_img_as_vgg_input</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_vgg_style</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_img_as_vgg_input</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_vgg_init</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_img_as_vgg_input</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_vgg_init</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_vgg_init</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+        <span class="c1"># model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">setup_model</span><span class="p">()</span>
+
+        <span class="c1"># represent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">features_style</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">represent_features</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">features_style_gram</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">gram_matrix</span><span class="p">(</span><span class="n">feature_style</span><span class="p">)</span> <span class="k">for</span> <span class="n">feature_style</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_style</span><span class="p">]</span>
+
+        <span class="c1"># optimization initialize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+          <span class="s1">&#39;loss_weights&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss_weights</span><span class="p">,</span>
+          <span class="s1">&#39;input_vgg_init&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_vgg_init</span><span class="p">,</span>
+          <span class="s1">&#39;features_style_gram&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_style_gram</span><span class="p">,</span>
+          <span class="s1">&#39;features_content&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_content</span>
+        <span class="p">}</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">best_loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">best_img</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">),</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imgs</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">load_resize_img</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">max_dim</span><span class="o">=</span><span class="mi">512</span><span class="p">):</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        
+        <span class="n">long</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="n">max_dim</span><span class="o">/</span><span class="n">long</span>
+        
+        <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">resize</span><span class="p">((</span><span class="nb">round</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">scale</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">scale</span><span class="p">)),</span> <span class="n">Image</span><span class="o">.</span><span class="n">ANTIALIAS</span><span class="p">)</span>
+        <span class="n">img_array</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">img_to_array</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+
+        <span class="c1"># We need to broadcast the image array such that it has a batch dimension </span>
+        <span class="n">img_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">img_array</span>
+
+    <span class="k">def</span> <span class="nf">display_img</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img_array</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># Remove the batch dimension</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">img_array</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># Normalize for display </span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">title</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1">### input</span>
+
+    <span class="k">def</span> <span class="nf">process_img_as_vgg_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img_array</span><span class="p">):</span>
+        <span class="n">img_vgg</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">applications</span><span class="o">.</span><span class="n">vgg19</span><span class="o">.</span><span class="n">preprocess_input</span><span class="p">(</span><span class="n">img_array</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">img_vgg</span>
+
+    <span class="k">def</span> <span class="nf">deprocess_img</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img_processed</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">img_processed</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;Input to deprocess image must be an image of &quot;</span>
+                                   <span class="s2">&quot;dimension [1, height, width, channel] or [height, width, channel]&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid input to deprocessing image&quot;</span><span class="p">)</span>
+
+        <span class="c1"># perform the inverse of the preprocessing step</span>
+        <span class="n">x</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">103.939</span>
+        <span class="n">x</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">116.779</span>
+        <span class="n">x</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">123.68</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+    <span class="k">def</span> <span class="nf">setup_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">vgg</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">applications</span><span class="o">.</span><span class="n">VGG19</span><span class="p">(</span><span class="n">include_top</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="s1">&#39;imagenet&#39;</span><span class="p">)</span>
+        <span class="n">vgg</span><span class="o">.</span><span class="n">trainable</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Content layer where will pull our feature maps</span>
+        <span class="n">layers_content</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;block5_conv2&#39;</span><span class="p">]</span> 
+
+        <span class="c1"># Style layer we are interested in</span>
+        <span class="n">layers_style</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;block1_conv1&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;block2_conv1&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;block3_conv1&#39;</span><span class="p">,</span> 
+                        <span class="s1">&#39;block4_conv1&#39;</span><span class="p">,</span> 
+                        <span class="s1">&#39;block5_conv1&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_layers_content</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers_content</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_layers_style</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers_style</span><span class="p">)</span>
+        
+        <span class="c1"># Get output layers corresponding to style and content layers </span>
+        <span class="n">outputs_style</span> <span class="o">=</span> <span class="p">[</span><span class="n">vgg</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">output</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">layers_style</span><span class="p">]</span>
+        <span class="n">outputs_content</span> <span class="o">=</span> <span class="p">[</span><span class="n">vgg</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">output</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">layers_content</span><span class="p">]</span>
+        <span class="n">outputs_model</span> <span class="o">=</span> <span class="n">outputs_style</span> <span class="o">+</span> <span class="n">outputs_content</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">vgg</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">outputs_model</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;style transfer&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="n">layer</span><span class="o">.</span><span class="n">trainable</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
+
+
+    <span class="k">def</span> <span class="nf">represent_features</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># batch compute content and style features</span>
+        <span class="n">outputs_style</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_vgg_style</span><span class="p">)</span>
+        <span class="n">outputs_content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_vgg_content</span><span class="p">)</span>
+
+        <span class="c1"># Get the style and content feature representations from our model  </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">features_style</span> <span class="o">=</span> <span class="p">[</span><span class="n">style_layer</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">style_layer</span> <span class="ow">in</span> <span class="n">outputs_style</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">num_layers_style</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">features_content</span> <span class="o">=</span> <span class="p">[</span><span class="n">content_layer</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">content_layer</span> <span class="ow">in</span> <span class="n">outputs_content</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">num_layers_style</span><span class="p">:]]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_style</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_content</span>
+
+    <span class="c1">### loss function</span>
+
+    <span class="k">def</span> <span class="nf">gram_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_tensor</span><span class="p">):</span>
+        <span class="n">channels</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">input_tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">input_tensor</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">channels</span><span class="p">])</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">a</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">gram</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">transpose_a</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">gram</span> <span class="o">/</span> <span class="n">tf</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_loss_content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_content</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">base_content</span> <span class="o">-</span> <span class="n">target</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">get_loss_style</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_style</span><span class="p">,</span> <span class="n">gram_target</span><span class="p">):</span>
+        <span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">channels</span> <span class="o">=</span> <span class="n">base_style</span><span class="o">.</span><span class="n">get_shape</span><span class="p">()</span><span class="o">.</span><span class="n">as_list</span><span class="p">()</span>
+        <span class="n">gram_style</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gram_matrix</span><span class="p">(</span><span class="n">base_style</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">gram_style</span> <span class="o">-</span> <span class="n">gram_target</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">compute_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Feed our init image through our model. This will give us the content and </span>
+        <span class="c1"># style representations at our desired layers. Since we&#39;re using eager</span>
+        <span class="c1"># our model is callable just like any other function!</span>
+        <span class="n">outputs_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_vgg_init</span><span class="p">)</span>
+
+        <span class="n">style_output_features</span> <span class="o">=</span> <span class="n">outputs_model</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">num_layers_style</span><span class="p">]</span>
+        <span class="n">content_output_features</span> <span class="o">=</span> <span class="n">outputs_model</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">num_layers_style</span><span class="p">:]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">score_style</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score_content</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Accumulate style losses from all layers</span>
+        <span class="c1"># Here, we equally weight each contribution of each loss layer</span>
+        <span class="n">weight_per_style_layer</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_layers_style</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">target_style</span><span class="p">,</span> <span class="n">comb_style</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features_style_gram</span><span class="p">,</span> <span class="n">style_output_features</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">score_style</span> <span class="o">+=</span> <span class="n">weight_per_style_layer</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_loss_style</span><span class="p">(</span><span class="n">comb_style</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">target_style</span><span class="p">)</span>
+
+        <span class="c1"># Accumulate content losses from all layers </span>
+        <span class="n">weight_per_content_layer</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_layers_content</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">target_content</span><span class="p">,</span> <span class="n">comb_content</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">features_content</span><span class="p">,</span> <span class="n">content_output_features</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">score_content</span> <span class="o">+=</span> <span class="n">weight_per_content_layer</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_loss_content</span><span class="p">(</span><span class="n">comb_content</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">target_content</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">score_style</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight_style</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score_content</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight_content</span>
+
+        <span class="c1"># Get total loss</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss_total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_style</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_content</span> 
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss_total</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_style</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_content</span>
+
+    <span class="c1">## optimization</span>
+
+    <span class="k">def</span> <span class="nf">compute_grads</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">GradientTape</span><span class="p">()</span> <span class="k">as</span> <span class="n">tape</span><span class="p">:</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">losses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_loss</span><span class="p">()</span>
+            
+        <span class="c1"># Compute gradients wrt input image</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss_total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">losses</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">tape</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss_total</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;input_vgg_init&#39;</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">losses</span>
+
+
+    <span class="k">def</span> <span class="nf">optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                 <span class="n">iterations</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">beta_1</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-1</span><span class="p">,</span>
+                 <span class="n">display</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">display_interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cache_interval</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">clear_cache</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">iterations</span> <span class="o">=</span> <span class="n">iterations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">display</span> <span class="o">=</span> <span class="n">display</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_interval</span> <span class="o">=</span> <span class="n">display_interval</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache_interval</span> <span class="o">=</span> <span class="n">cache_interval</span>
+        
+        <span class="k">if</span> <span class="n">clear_cache</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">imgs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># Use the .numpy() method to get the concrete numpy array</span>
+        <span class="n">plot_img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_vgg_init</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        <span class="n">plot_img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deprocess_img</span><span class="p">(</span><span class="n">plot_img</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imgs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plot_img</span><span class="p">)</span>
+                
+        <span class="c1"># Create our optimizer</span>
+        <span class="n">opt</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">,</span> <span class="n">beta_1</span><span class="o">=</span><span class="n">beta_1</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="n">epsilon</span><span class="p">)</span>
+        
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">global_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="n">norm_means</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">103.939</span><span class="p">,</span> <span class="mf">116.779</span><span class="p">,</span> <span class="mf">123.68</span><span class="p">])</span>
+        <span class="n">min_vals</span> <span class="o">=</span> <span class="o">-</span><span class="n">norm_means</span>
+        <span class="n">max_vals</span> <span class="o">=</span> <span class="mi">255</span> <span class="o">-</span> <span class="n">norm_means</span> 
+        
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iterations</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">grads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">losses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_grads</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_style</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">losses</span>
+            <span class="n">opt</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">([(</span><span class="bp">self</span><span class="o">.</span><span class="n">grads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_vgg_init</span><span class="p">)])</span>
+            <span class="n">clipped</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">clip_by_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_vgg_init</span><span class="p">,</span> <span class="n">min_vals</span><span class="p">,</span> <span class="n">max_vals</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_vgg_init</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">clipped</span><span class="p">)</span>
+            <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> 
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">best_loss</span><span class="p">:</span>
+                <span class="c1"># Update best loss and best image from total loss. </span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">best_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">best_img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deprocess_img</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_vgg_init</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+            
+            <span class="c1"># Use the .numpy() method to get the concrete numpy array</span>
+            <span class="n">plot_img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_vgg_init</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+            <span class="n">plot_img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deprocess_img</span><span class="p">(</span><span class="n">plot_img</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_interval</span><span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">imgs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plot_img</span><span class="p">)</span>
+                        
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">display</span><span class="p">:</span>
+                <span class="kn">import</span> <span class="nn">IPython.display</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">display_interval</span><span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>                    
+                    <span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">clear_output</span><span class="p">(</span><span class="n">wait</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">display_png</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">plot_img</span><span class="p">))</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Iteration: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>        
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Total loss: </span><span class="si">{:.2e}</span><span class="s1">, &#39;</span> 
+                          <span class="s1">&#39;style loss: </span><span class="si">{:.2e}</span><span class="s1">, &#39;</span>
+                          <span class="s1">&#39;content loss: </span><span class="si">{:.2e}</span><span class="s1">, &#39;</span>
+                          <span class="s1">&#39;time: </span><span class="si">{:.4f}</span><span class="s1">s&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_style</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_content</span><span class="p">,</span> 
+                                                 <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">start_time</span><span class="p">))</span>
+        <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">best_img</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+
+    <span class="k">def</span> <span class="nf">show_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show_large_final</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_img</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="s1">&#39;Content Image&#39;</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_img</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="p">,</span> <span class="s1">&#39;Style Image&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">show_large_final</span><span class="p">:</span> 
+            <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+
+            <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">best_img</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Output Image&#39;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">show_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">15</span><span class="p">))</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_img</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="s1">&#39;Content Image&#39;</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_img</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="p">,</span> <span class="s1">&#39;Style Image&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    
+    <span class="k">def</span> <span class="nf">save_gif</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;style_transfer.gif&#39;</span><span class="p">):</span>
+        <span class="n">images</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">imgs</span><span class="p">:</span>
+            <span class="n">images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+
+        <span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span><span class="p">,</span>
+                       <span class="n">save_all</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">append_images</span><span class="o">=</span><span class="n">images</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> 
+                       <span class="n">optimize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    
+    <span class="k">def</span> <span class="nf">save_pic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;style_transfer.jpg&#39;</span><span class="p">):</span>
+        <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">best_img</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Ewen Wang.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
