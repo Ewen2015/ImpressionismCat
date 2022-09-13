@@ -76,6 +76,44 @@
 <h1>ImpressionismCat Tutorials<a class="headerlink" href="#impressionismcat-tutorials" title="Permalink to this heading"></a></h1>
 <div class="section" id="neural-style-transfer">
 <h2>Neural Style Transfer<a class="headerlink" href="#neural-style-transfer" title="Permalink to this heading"></a></h2>
+<p>First, import ImpressionismCat to your workspace like Jupyter Notebook. To do a neural style transfer art, you need two images at least:</p>
+<ol class="arabic simple">
+<li><p><strong>A content image</strong>, some you would like to present as the content.</p></li>
+<li><p><strong>A style image</strong>, such as an artwork by a famous artist.</p></li>
+</ol>
+<p>In the tutorial, we use a <strong>Volvo C40</strong> as the content image and <strong>The Great Wave off Kanagawa</strong> as the style image.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ol class="arabic simple">
+<li><p>The Volvo C40 is an battery electric subcompact luxury crossover SUV with a sloping roofline manufactured by Volvo Cars, which was released on 2 March 2021. It is also the first Volvo model that is only available as a battery electric vehicle.</p></li>
+<li><p>The Great Wave off Kanagawa (Japanese: 神奈川沖浪裏, Hepburn: Kanagawa-oki Nami Ura, lit. “Under the Wave off Kanagawa”) is a woodblock print that was made by Japanese ukiyo-e artist Hokusai, probably in late 1831 during the Edo period of Japanese history. The print depicts three boats moving through a storm-tossed sea with a large wave forming a spiral in the centre and Mount Fuji visible in the background.</p></li>
+</ol>
+</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">impressionismcat</span> <span class="k">as</span> <span class="nn">ic</span>
+
+<span class="n">path_content</span> <span class="o">=</span> <span class="s1">&#39;img/c40_recharge.jpg&#39;</span>
+<span class="n">path_style</span> <span class="o">=</span> <span class="s1">&#39;img/great_wave.jpg&#39;</span>
+</pre></div>
+</div>
+<p>Secondly, we initialize a <code class="code docutils literal notranslate"><span class="pre">StyleTransfer</span></code> Class as <code class="code docutils literal notranslate"><span class="pre">style</span></code>. Before transfering the style, we check the inputs.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">style</span> <span class="o">=</span> <span class="n">ic</span><span class="o">.</span><span class="n">paint</span><span class="o">.</span><span class="n">StyleTransfer</span><span class="p">(</span><span class="n">path_content</span><span class="p">,</span> <span class="n">path_style</span><span class="p">)</span>
+
+<span class="n">style</span><span class="o">.</span><span class="n">show_inputs</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="_images/inputs.png" class="align-center" src="_images/inputs.png" />
+<p>Now it’s time to do the transfer! We set 2000 iterations and output the result.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">style</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">iterations</span><span class="o">=</span><span class="mi">2000</span><span class="p">)</span>
+
+<span class="n">style</span><span class="o">.</span><span class="n">show_results</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="_images/result.png" class="align-center" src="_images/result.png" />
+<p>ImpressionismCat provides function to generate a gif to record the transfer progress. Make it fun!</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">style</span><span class="o">.</span><span class="n">save_gif</span><span class="p">(</span><span class="s1">&#39;style_greatWave.gif&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/style_greatwave.gif" class="align-center" src="_images/style_greatwave.gif" />
 </div>
 </div>
 

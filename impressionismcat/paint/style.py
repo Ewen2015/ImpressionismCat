@@ -20,10 +20,21 @@ mpl.rcParams['axes.grid'] = False
 
 
 class StyleTransfer(object):
-    """docstring for StyleTransfer"""
-    def __init__(self, path_content=None, path_style=None, iterations=1000, 
-                  display=True, display_interval=1,
-                  weight_content=1e3, weight_style=1e-2):
+    """StyleTransfer uses deep learning to transfer an art style from one painting to another.
+    """
+    def __init__(self, path_content=None, path_style=None, iterations=1000, display=True, display_interval=1, weight_content=1e3, weight_style=1e-2):
+        """ Intialize a StyleTransfer Class.
+
+        Args:
+            delta (int): The number of days ago.
+            path_content (str): A content image path, default None. 
+            path_style (str): A style image path, default None. 
+            iterations (int): The number of iterations to render the content image, defualt 1000.
+            display (bool): If display the results in progress, default True. 
+            display_interval (int): The interval to display the progress, default 1. 
+            weight_content (float): A weight for content image, default 1e3. 
+            weight_style (float): A weight for style image, default 1e-2. 
+        """
         super(StyleTransfer, self).__init__()
         self.path_content=path_content
         self.path_style=path_style
