@@ -4,6 +4,21 @@ ImpressionismCat Tutorials
 Neural Style Transfer
 =====================
 
+Background
+----------
+
+**AlexNet** came out in 2012 and it improved on the traditional Convolutional neural networks, So we can understand **VGG as a successor of the AlexNet** but it was created by a different group named as **Visual Geometry Group** at Oxford's and hence the name **VGG**, It carries and uses some ideas from it's predecessors and improves on them and uses deep Convolutional neural layers to improve accuracy.
+
+.. image:: images/vgg19.jpeg
+  :align: center
+
+.. note::
+
+    `Very Deep Convolutional Networks for Large-Scale Image Recognition <https://arxiv.org/abs/1409.1556>`_ (ICLR 2015)
+
+Make it happen!
+---------------
+
 First, import ImpressionismCat to your workspace like Jupyter Notebook. To do a neural style transfer art, you need two images at least:
 
 1. **A content image**, some you would like to present as the content.
