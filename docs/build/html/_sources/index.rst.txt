@@ -10,8 +10,8 @@ Welcome to ImpressionismCat's documentation!
 
 ImpressionismCat has realized the following algorithms:
 
-1. **Neural style transfer** (Gatys, Ecker, and Bethge, “A Neural Algorithm of Artistic Style.”). 
-2. TBA
+- **Neural style transfer** (Gatys, Ecker, and Bethge, “A Neural Algorithm of Artistic Style.”). 
+- TBA
 
 Overview
 ********

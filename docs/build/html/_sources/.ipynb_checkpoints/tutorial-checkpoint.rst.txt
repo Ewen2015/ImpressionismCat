@@ -54,3 +54,4 @@ ImpressionismCat provides function to generate a gif to record the transfer prog
 
 .. image:: images/style_greatwave.gif
   :align: center
+
