@@ -25,13 +25,13 @@ class StyleTransfer(object):
     def __init__(self, path_content=None, path_style=None, iterations=1000, display=True, display_interval=1, weight_content=1e3, weight_style=1e-2):
         """ Intialize a StyleTransfer Class.
         
-        The initialization involves:
-        | 1) Parameters initialization
-        | 2) Images loading
-        | 3) Images initialization for TensorFlow computing
-        | 4) Model setup
-        | 5) Features representation
-        | 6) Optimization initialization
+        The initialization involves:\n
+        1) Parameters initialization\n
+        2) Images loading\n
+        3) Images initialization for TensorFlow computing\n
+        4) Model setup\n
+        5) Features representation\n
+        6) Optimization initialization
 
         Parameters:
             delta (int): The number of days ago.
