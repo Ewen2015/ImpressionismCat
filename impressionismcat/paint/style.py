@@ -33,7 +33,7 @@ class StyleTransfer(object):
         | 5) Features representation
         | 6) Optimization initialization
 
-        Args:
+        Parameters:
             delta (int): The number of days ago.
             path_content (str): A content image path, default None. 
             path_style (str): A style image path, default None. 
@@ -82,6 +82,8 @@ class StyleTransfer(object):
         self.best_loss, self.best_img = float('inf'), None
         self.imgs = []
 
+    ### input
+    
     def load_resize_img(self, path, max_dim=512):
         """ Preprocess an image.
         
@@ -103,7 +105,7 @@ class StyleTransfer(object):
         # We need to broadcast the image array such that it has a batch dimension 
         img_array = np.expand_dims(img, axis=0)
         return img_array
-
+    
     def display_img(self, img_array, title=None):
         """ Display an image.
         
@@ -120,8 +122,6 @@ class StyleTransfer(object):
             plt.title(title)
         return None
 
-    ### input
-
     def process_img_as_vgg_input(self, img_array):
         """ Process a image to a VGG19 model input with tf.keras.applications.vgg19.preprocess_input.
         
@@ -130,6 +130,10 @@ class StyleTransfer(object):
             
         Returns:
             img_vgg: A processed image array.
+        
+        Note: 
+            Each Keras Application expects a specific kind of input preprocessing. For VGG19, call tf.keras.applications.vgg19.preprocess_input on your inputs before passing them to the model. vgg19.preprocess_input will convert the input images from RGB to BGR, then will zero-center each color channel with respect to the ImageNet dataset, without scaling.
+        
         """
         img_vgg = tf.keras.applications.vgg19.preprocess_input(img_array)
         return img_vgg
@@ -159,9 +163,14 @@ class StyleTransfer(object):
 
         x = np.clip(x, 0, 255).astype('uint8')
         return x
-
+    
+    # model
+    
     def setup_model(self):
-        """ Setup VGG19 model.
+        """ Setup a VGG19 model with selected layers.
+        
+        Note: 
+            https://keras.io/api/applications/vgg/#vgg19-function
         """
         vgg = tf.keras.applications.VGG19(include_top=False, weights='imagenet')
         vgg.trainable = False
@@ -192,6 +201,8 @@ class StyleTransfer(object):
 
 
     def represent_features(self):
+        """ Get the style and content feature representations from the model.
+        """
         # batch compute content and style features
         outputs_style = self.model(self.input_vgg_style)
         outputs_content = self.model(self.input_vgg_content)
@@ -204,6 +215,16 @@ class StyleTransfer(object):
     ### loss function
 
     def gram_matrix(self, input_tensor):
+        """ Calculate the Gram Matrix of input tensor.
+        
+        A Gram matrix (often referred to as a Gramian matrix) is a matrix created by multiplying a matrix with its own transpose. The Gramian matrix provides a degree of correlation between the vectors of the matrix since we’re multiplying a matrix with its own transpose. Here, we use Gram matrix to find the correlation between parameters of different Convolutional Filters in a Convolutional Neural Network.
+        
+        Args:
+            input_tensor (tensorflow.tensor): The input tensor.
+        
+        Returns:
+            gram_matrix 
+        """
         channels = int(input_tensor.shape[-1])
         a = tf.reshape(input_tensor, [-1, channels])
         n = tf.shape(a)[0]
@@ -211,14 +232,34 @@ class StyleTransfer(object):
         return gram / tf.cast(n, tf.float32)
 
     def get_loss_content(self, base_content, target):
+        """ Calculate the loss of the content.
+        
+        Args:
+            base_content (tensorflow.tensor): The processed content tensor.
+            target (tensorflow.tensor): The target content tensor.
+        
+        Returns:
+            Mean squared error.
+        """
         return tf.reduce_mean(tf.square(base_content - target))
 
     def get_loss_style(self, base_style, gram_target):
+        """ Calculate the loss of the style.
+        
+        Args:
+            base_style (tensorflow.tensor): The processed style tensor.
+            gram_target (tensorflow.tensor): The target content gram tensor.
+        
+        Returns:
+            Mean squared error.
+        """
         height, width, channels = base_style.get_shape().as_list()
         gram_style = self.gram_matrix(base_style)
         return tf.reduce_mean(tf.square(gram_style - gram_target))
 
     def compute_loss(self):
+        """ Compute the total loss of the style and content from all layers.
+        """
         # Feed our init image through our model. This will give us the content and 
         # style representations at our desired layers. Since we're using eager
         # our model is callable just like any other function!
@@ -251,6 +292,8 @@ class StyleTransfer(object):
     ## optimization
 
     def compute_grads(self):
+        """ Calcualte the gradients.
+        """
         with tf.GradientTape() as tape: 
             self.losses = self.compute_loss()
             
@@ -262,7 +305,19 @@ class StyleTransfer(object):
     def optimize(self, 
                  iterations=1000, learning_rate=5, beta_1=0.99, epsilon=1e-1,
                  display=True, display_interval=1, cache_interval=50, clear_cache=False):
-            
+        """ Optimize the transfer process.
+        
+        Parameters:
+            iterations (int): The number of iterations for optimizing, default 1000.
+            learning_rate (int): The learning rate of tf.optimizers.Adam, default 5.
+            beta_1 (float): The beta 1 of tf.optimizers.Adam, default 0.99. 
+            epsilon (float): The epsiple of tf.optimizers.Adam, default 1e-1.
+            display (bool): Control whether display the progress during learning, default True. 
+            display_interval (int): The interval to display the progress, default 1. 
+            cache_interval (int): The interval to save the progress, default 50. 
+            clear_cache (bool): Control whether clear the cache, default False.
+        
+        """
         self.iterations = iterations
         self.display = display 
         self.display_interval = display_interval
@@ -321,7 +376,9 @@ class StyleTransfer(object):
         return None
 
 
-    def show_results(self, show_large_final=True):
+    def show_results(self):
+        """ Display the results.
+        """
         plt.figure(figsize=(10, 5))
 
         plt.subplot(1, 2, 1)
@@ -330,15 +387,16 @@ class StyleTransfer(object):
         plt.subplot(1, 2, 2)
         self.display_img(self.style, 'Style Image')
 
-        if show_large_final: 
-            plt.figure(figsize=(10, 10))
+        plt.figure(figsize=(10, 10))
 
-            plt.imshow(self.best_img)
-            plt.title('Output Image')
-            plt.show()
+        plt.imshow(self.best_img)
+        plt.title('Output Image')
+        plt.show()
         return None
 
     def show_inputs(self):
+        """ Display the inputs.
+        """
         plt.figure(figsize=(15,15))
 
         plt.subplot(1, 2, 1)
@@ -350,6 +408,11 @@ class StyleTransfer(object):
         return None
     
     def save_gif(self, path='style_transfer.gif'):
+        """ Save the transfering progress as GIF.
+        
+        Args:
+            path (str): The path to save the GIF, default 'style_transfer.gif'.
+        """
         images = []
 
         for i in self.imgs:
@@ -361,5 +424,10 @@ class StyleTransfer(object):
         return None
     
     def save_pic(self, path='style_transfer.jpg'):
+        """ Save the results as JPG.
+        
+        Args:
+            path (str): The path to save the JPG, default 'style_transfer.jpg'.
+        """
         Image.fromarray(self.best_img).save(path)
         return None

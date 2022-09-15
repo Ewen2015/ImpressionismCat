@@ -20,6 +20,8 @@ extensions = ['sphinx.ext.todo', 'sphinx.ext.viewcode', 'sphinx.ext.autodoc', 's
 templates_path = ['_templates']
 exclude_patterns = []
 
+autoclass_content = 'both'
+
 # Make sure the target is unique
 autosectionlabel_prefix_document = True
 

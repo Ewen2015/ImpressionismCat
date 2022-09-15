@@ -1,5 +1,0 @@
-Appendix
-********
-
-Neural Style Transfer
-=====================

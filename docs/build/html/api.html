@@ -41,7 +41,14 @@
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">ImpressionismCat Tutorials</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">ImpressionismCat API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#neural-style-transfer">Neural Style Transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#neural-style-transfer">Neural Style Transfer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#preprocess">Preprocess</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#neural-network-architecture">Neural Network Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#loss-function">Loss Function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#optimization">Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#display">Display</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="appendix.html">Appendix</a></li>
@@ -76,12 +83,238 @@
 <h1>ImpressionismCat API<a class="headerlink" href="#impressionismcat-api" title="Permalink to this heading"></a></h1>
 <div class="section" id="neural-style-transfer">
 <h2>Neural Style Transfer<a class="headerlink" href="#neural-style-transfer" title="Permalink to this heading"></a></h2>
-<dl class="py function">
+<dl class="py class">
 <dt class="sig sig-object py" id="impressionismcat.paint.StyleTransfer">
-<span class="sig-prename descclassname"><span class="pre">impressionismcat.paint.</span></span><span class="sig-name descname"><span class="pre">StyleTransfer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_content</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_content</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/impressionismcat/paint/style.html#StyleTransfer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#impressionismcat.paint.StyleTransfer" title="Permalink to this definition"></a></dt>
-<dd><p>docstring for StyleTransfer</p>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">impressionismcat.paint.</span></span><span class="sig-name descname"><span class="pre">StyleTransfer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_content</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_content</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/impressionismcat/paint/style.html#StyleTransfer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#impressionismcat.paint.StyleTransfer" title="Permalink to this definition"></a></dt>
+<dd><p>StyleTransfer uses deep learning to transfer an art style from one painting to another.</p>
+<p>Intialize a StyleTransfer Class.</p>
+<p>The initialization involves:
+| 1) Parameters initialization
+| 2) Images loading
+| 3) Images initialization for TensorFlow computing
+| 4) Model setup
+| 5) Features representation
+| 6) Optimization initialization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>delta</strong> (<em>int</em>) – The number of days ago.</p></li>
+<li><p><strong>path_content</strong> (<em>str</em>) – A content image path, default None.</p></li>
+<li><p><strong>path_style</strong> (<em>str</em>) – A style image path, default None.</p></li>
+<li><p><strong>iterations</strong> (<em>int</em>) – The number of iterations to render the content image, defualt 1000.</p></li>
+<li><p><strong>display</strong> (<em>bool</em>) – If display the results in progress, default True.</p></li>
+<li><p><strong>display_interval</strong> (<em>int</em>) – The interval to display the progress, default 1.</p></li>
+<li><p><strong>weight_content</strong> (<em>float</em>) – A weight for content image, default 1e3.</p></li>
+<li><p><strong>weight_style</strong> (<em>float</em>) – A weight for style image, default 1e-2.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
+<div class="section" id="preprocess">
+<h3>Preprocess<a class="headerlink" href="#preprocess" title="Permalink to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="impressionismcat.paint.StyleTransfer.load_resize_img">
+<span class="sig-prename descclassname"><span class="pre">impressionismcat.paint.StyleTransfer.</span></span><span class="sig-name descname"><span class="pre">load_resize_img</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">512</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#impressionismcat.paint.StyleTransfer.load_resize_img" title="Permalink to this definition"></a></dt>
+<dd><p>Preprocess an image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – The path of the image.</p></li>
+<li><p><strong>max_dim</strong> (<em>int</em>) – The size of maximum dimension, default 512.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A preprocessed image array, 3 dimensions (one more for a batch dimension).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>img_array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="impressionismcat.paint.StyleTransfer.process_img_as_vgg_input">
+<span class="sig-prename descclassname"><span class="pre">impressionismcat.paint.StyleTransfer.</span></span><span class="sig-name descname"><span class="pre">process_img_as_vgg_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#impressionismcat.paint.StyleTransfer.process_img_as_vgg_input" title="Permalink to this definition"></a></dt>
+<dd><p>Process a image to a VGG19 model input with tf.keras.applications.vgg19.preprocess_input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>img_array</strong> (<em>numpy.array</em>) – An image array generated by load_resize_img.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A processed image array.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>img_vgg</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Each Keras Application expects a specific kind of input preprocessing. For VGG19, call tf.keras.applications.vgg19.preprocess_input on your inputs before passing them to the model. vgg19.preprocess_input will convert the input images from RGB to BGR, then will zero-center each color channel with respect to the ImageNet dataset, without scaling.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="impressionismcat.paint.StyleTransfer.deprocess_img">
+<span class="sig-prename descclassname"><span class="pre">impressionismcat.paint.StyleTransfer.</span></span><span class="sig-name descname"><span class="pre">deprocess_img</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_processed</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#impressionismcat.paint.StyleTransfer.deprocess_img" title="Permalink to this definition"></a></dt>
+<dd><p>Deprocess a processed array in VGG19 input format back to its previous format for display reason.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>img_vgg</strong> (<em>numpy.array</em>) – A processed image array.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An image array generated by load_resize_img.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>img_array (numpy.array)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="impressionismcat.paint.StyleTransfer.represent_features">
+<span class="sig-prename descclassname"><span class="pre">impressionismcat.paint.StyleTransfer.</span></span><span class="sig-name descname"><span class="pre">represent_features</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#impressionismcat.paint.StyleTransfer.represent_features" title="Permalink to this definition"></a></dt>
+<dd><p>Get the style and content feature representations from the model.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="neural-network-architecture">
+<h3>Neural Network Architecture<a class="headerlink" href="#neural-network-architecture" title="Permalink to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="impressionismcat.paint.StyleTransfer.setup_model">
+<span class="sig-prename descclassname"><span class="pre">impressionismcat.paint.StyleTransfer.</span></span><span class="sig-name descname"><span class="pre">setup_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#impressionismcat.paint.StyleTransfer.setup_model" title="Permalink to this definition"></a></dt>
+<dd><p>Setup a VGG19 model with selected layers.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference external" href="https://keras.io/api/applications/vgg/#vgg19-function">https://keras.io/api/applications/vgg/#vgg19-function</a></p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="loss-function">
+<h3>Loss Function<a class="headerlink" href="#loss-function" title="Permalink to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="impressionismcat.paint.StyleTransfer.gram_matrix">
+<span class="sig-prename descclassname"><span class="pre">impressionismcat.paint.StyleTransfer.</span></span><span class="sig-name descname"><span class="pre">gram_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_tensor</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#impressionismcat.paint.StyleTransfer.gram_matrix" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the Gram Matrix of input tensor.</p>
+<p>A Gram matrix (often referred to as a Gramian matrix) is a matrix created by multiplying a matrix with its own transpose. The Gramian matrix provides a degree of correlation between the vectors of the matrix since we’re multiplying a matrix with its own transpose. Here, we use Gram matrix to find the correlation between parameters of different Convolutional Filters in a Convolutional Neural Network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_tensor</strong> (<em>tensorflow.tensor</em>) – The input tensor.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>gram_matrix</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="impressionismcat.paint.StyleTransfer.get_loss_content">
+<span class="sig-prename descclassname"><span class="pre">impressionismcat.paint.StyleTransfer.</span></span><span class="sig-name descname"><span class="pre">get_loss_content</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_content</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#impressionismcat.paint.StyleTransfer.get_loss_content" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the loss of the content.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base_content</strong> (<em>tensorflow.tensor</em>) – The processed content tensor.</p></li>
+<li><p><strong>target</strong> (<em>tensorflow.tensor</em>) – The target content tensor.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Mean squared error.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="impressionismcat.paint.StyleTransfer.get_loss_style">
+<span class="sig-prename descclassname"><span class="pre">impressionismcat.paint.StyleTransfer.</span></span><span class="sig-name descname"><span class="pre">get_loss_style</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_style</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gram_target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#impressionismcat.paint.StyleTransfer.get_loss_style" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the loss of the style.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base_style</strong> (<em>tensorflow.tensor</em>) – The processed style tensor.</p></li>
+<li><p><strong>gram_target</strong> (<em>tensorflow.tensor</em>) – The target content gram tensor.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Mean squared error.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="impressionismcat.paint.StyleTransfer.compute_loss">
+<span class="sig-prename descclassname"><span class="pre">impressionismcat.paint.StyleTransfer.</span></span><span class="sig-name descname"><span class="pre">compute_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#impressionismcat.paint.StyleTransfer.compute_loss" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the total loss of the style and content from all layers.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="optimization">
+<h3>Optimization<a class="headerlink" href="#optimization" title="Permalink to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="impressionismcat.paint.StyleTransfer.compute_grads">
+<span class="sig-prename descclassname"><span class="pre">impressionismcat.paint.StyleTransfer.</span></span><span class="sig-name descname"><span class="pre">compute_grads</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#impressionismcat.paint.StyleTransfer.compute_grads" title="Permalink to this definition"></a></dt>
+<dd><p>Calcualte the gradients.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="impressionismcat.paint.StyleTransfer.optimize">
+<span class="sig-prename descclassname"><span class="pre">impressionismcat.paint.StyleTransfer.</span></span><span class="sig-name descname"><span class="pre">optimize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">learning_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta_1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.99</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clear_cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#impressionismcat.paint.StyleTransfer.optimize" title="Permalink to this definition"></a></dt>
+<dd><p>Optimize the transfer process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>iterations</strong> (<em>int</em>) – The number of iterations for optimizing, default 1000.</p></li>
+<li><p><strong>learning_rate</strong> (<em>int</em>) – The learning rate of tf.optimizers.Adam, default 5.</p></li>
+<li><p><strong>beta_1</strong> (<em>float</em>) – The beta 1 of tf.optimizers.Adam, default 0.99.</p></li>
+<li><p><strong>epsilon</strong> (<em>float</em>) – The epsiple of tf.optimizers.Adam, default 1e-1.</p></li>
+<li><p><strong>display</strong> (<em>bool</em>) – Control whether display the progress during learning, default True.</p></li>
+<li><p><strong>display_interval</strong> (<em>int</em>) – The interval to display the progress, default 1.</p></li>
+<li><p><strong>cache_interval</strong> (<em>int</em>) – The interval to save the progress, default 50.</p></li>
+<li><p><strong>clear_cache</strong> (<em>bool</em>) – Control whether clear the cache, default False.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="display">
+<h3>Display<a class="headerlink" href="#display" title="Permalink to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="impressionismcat.paint.StyleTransfer.show_inputs">
+<span class="sig-prename descclassname"><span class="pre">impressionismcat.paint.StyleTransfer.</span></span><span class="sig-name descname"><span class="pre">show_inputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#impressionismcat.paint.StyleTransfer.show_inputs" title="Permalink to this definition"></a></dt>
+<dd><p>Display the inputs.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="impressionismcat.paint.StyleTransfer.show_results">
+<span class="sig-prename descclassname"><span class="pre">impressionismcat.paint.StyleTransfer.</span></span><span class="sig-name descname"><span class="pre">show_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#impressionismcat.paint.StyleTransfer.show_results" title="Permalink to this definition"></a></dt>
+<dd><p>Display the results.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="impressionismcat.paint.StyleTransfer.save_gif">
+<span class="sig-prename descclassname"><span class="pre">impressionismcat.paint.StyleTransfer.</span></span><span class="sig-name descname"><span class="pre">save_gif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'style_transfer.gif'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#impressionismcat.paint.StyleTransfer.save_gif" title="Permalink to this definition"></a></dt>
+<dd><p>Save the transfering progress as GIF.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – The path to save the GIF, default ‘style_transfer.gif’.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="impressionismcat.paint.StyleTransfer.save_pic">
+<span class="sig-prename descclassname"><span class="pre">impressionismcat.paint.StyleTransfer.</span></span><span class="sig-name descname"><span class="pre">save_pic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'style_transfer.jpg'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#impressionismcat.paint.StyleTransfer.save_pic" title="Permalink to this definition"></a></dt>
+<dd><p>Save the results as JPG.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – The path to save the JPG, default ‘style_transfer.jpg’.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 </div>
 </div>
 
