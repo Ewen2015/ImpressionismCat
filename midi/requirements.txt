@@ -1,0 +1,7 @@
+mingus
+MIDIUtil
+music21
+MuseScore
+pretty_midi
+mir_eval
+librosa
